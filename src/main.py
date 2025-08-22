@@ -1,9 +1,11 @@
 from textnode import TextNode, TextType
+from copy_files import copy_files
 
 
 def main():
-  node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-  print(node)
-
+  source = '/home/alex/workspace/github.com/SpottedHorse/static_site_generator/static'
+  dest = '/home/alex/workspace/github.com/SpottedHorse/static_site_generator/public'
+  
+  copy_files(source, dest)
 
 main()
