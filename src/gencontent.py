@@ -1,6 +1,6 @@
 import os
+from pathlib import Path
 from block_markdown import markdown_to_html_node
-import pathlib
 
 
 def generate_page(from_path, template_path, dest_path):
@@ -34,25 +34,14 @@ def extract_title(md):
             return line[2:]
     raise ValueError("no title found")
 
-
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
-    
-    print(f'dir_path_content = {dir_path_content}')
-    
-    files = os.listdir(dir_path_content)
-    print(f'Listing files: {files}')
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        if os.path.isfile(from_path):
+            dest_path = Path(dest_path).with_suffix(".html")
+            generate_page(from_path, template_path, dest_path)
+        else:
+            generate_pages_recursive(from_path, template_path, dest_path)
 
-    for file in files:
-        file_path = os.path.join(dir_path_content, file)
-        print(f'file = {file_path}')
-        if os.path.isdir(file_path):
-            dest_dir_path = os.path.join(dest_dir_path, file)
-            print(f"\n** Recursion {file_path} {template_path} -> {dest_dir_path}\n")
-            generate_pages_recursive(file_path, template_path, dest_dir_path)
-
-        elif os.path.isfile(file_path):
-            dest_dir_path = os.path.join(dest_dir_path, "index.html")
-            print(f"\n* Generating page: {file_path} {template_path} -> {dest_dir_path}\n")
-            generate_page(file_path, template_path, dest_dir_path)
-            print(f'Generated {file_path}')
 
